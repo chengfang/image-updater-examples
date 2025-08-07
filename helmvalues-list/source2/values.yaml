@@ -1,7 +1,7 @@
 images:
-- registry: docker.io
-  repository: docker.io/bitnami/nginx
-  tag: 1.27.5
+  - registry: docker.io
+    repository: bitnami/nginx
+    tag: 1.27.1
 env:
-- name: ENVIRONMENT
-  value: production
+  - name: ENVIRONMENT
+    value: production
