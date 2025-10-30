@@ -5,10 +5,10 @@ This example contains a helm-based multi-source app:
 After running image-updater, the image version in the live cluster should be updated to the new version.
 The changes are written to `write-helmvalues/source2/values.yaml` file. See commit history of source2 repo for diffs
 ```shell
-  -  repository: bitnami/nginx
+  -  repository: bitnamilegacy/nginx
   -  tag: 1.27.1
   
-  +  repository: docker.io/bitnami/nginx
+  +  repository: docker.io/bitnamilegacy/nginx
   +  tag: 1.27.2
 ```
 To configure the app to write updates to the correct repo, branch, values file path and values elements,
@@ -51,7 +51,7 @@ kubectl get pod write-helmvalues-nginx-xxx -n argocd -o yaml
 
 # to view the current container image name and image tag
 kubectl get pod write-helmvalues-nginx-75b44767bb-gtnnd -n argocd -o jsonpath='{.spec.containers[0].image}'
-docker.io/bitnami/nginx:1.27.1
+docker.io/bitnamilegacy/nginx:1.27.1
 
 # to run image-updater from command line
 ../image-updater/dist/argocd-image-updater run --once --registries-conf-path=""
@@ -75,7 +75,7 @@ INFO[0005] Successfully updated the live application spec  application=write-hel
 
 # to check the updated image tag
 kubectl get pod write-helmvalues-nginx-xxx -n argocd -o jsonpath='{.spec.containers[0].image}'
-docker.io/bitnami/nginx:1.27.2
+docker.io/bitnamilegacy/nginx:1.27.2
 
 # to delete the write-helmvalues app
 kubectl delete -f write-helmvalues/app/write-helmvalues.yaml 

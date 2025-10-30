@@ -4,7 +4,7 @@ metadata:
   name: write-helmvalues
   namespace: argocd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: nginx=docker.io/bitnami/nginx:1.27.x
+    argocd-image-updater.argoproj.io/image-list: nginx=docker.io/bitnamilegacy/nginx:1.27.x
     argocd-image-updater.argoproj.io/update-strategy: semver
     argocd-image-updater.argoproj.io/force-update: "false"
     argocd-image-updater.argoproj.io/nginx.helm.image-name: image.repository
