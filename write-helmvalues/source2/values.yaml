@@ -2,7 +2,7 @@
 image:
   registry: docker.io
   repository: bitnamilegacy/nginx
-  tag: 1.27.1  # 1.27.1 is not the latest, and is eligible for update
+  tag: 1.27.5 # 1.27.1 is not the latest, and is eligible for update
 env:
-  - name: ENVIRONMENT
-    value: production
+- name: ENVIRONMENT
+  value: production
