@@ -56,6 +56,18 @@ kubectl -n argocd create secret generic git-creds --from-literal=username=xxx --
 # to install the kustomize-helmvalues Argo CD application as a plain manifest
 kubectl apply -f kustomize-helmvalues/app/kustomize-helmvalues.yaml
 
+# to verify the application state containing both kustomize and helm sources, and 2 images:
+kubectl describe -n argocd apps/kustomize-helmvalues
+...
+  Source Types:
+    Kustomize
+    Helm
+
+  Summary:
+    Images:
+      docker.io/bitnamilegacy/nginx:1.27.1
+      nginx:1.16.0
+
 # to view the application pod
 kubectl get pod kustomize-helmvalues-nginx-xxx -n argocd -o yaml
 
@@ -66,10 +78,21 @@ docker.io/bitnami/nginx:1.27.1
 # to run image-updater from command line
 ../image-updater/dist/argocd-image-updater run --once --registries-conf-path=""
 
+# to verify the application state after image updater run:
+kubectl describe -n argocd apps/kustomize-helmvalues
+...
+  Source Types:
+    Kustomize
+    Helm
+
+  Summary:
+    Images:
+      docker.io/bitnamilegacy/nginx:1.27.5
+      nginx:1.16.0
 
 # to check the updated image tag
 kubectl get pod kustomize-helmvalues-nginx-xxx -n argocd -o jsonpath='{.spec.containers[0].image}'
-docker.io/bitnami/nginx:1.27.2
+docker.io/bitnami/nginx:1.27.5
 
 # to delete the write-helmvalues app
 kubectl delete -f kustomize-helmvalues/app/write-helmvalues.yaml 
