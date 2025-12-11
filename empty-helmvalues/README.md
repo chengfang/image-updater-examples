@@ -1,6 +1,6 @@
 This example contains a helm-based multi-source app:
 * source 1: nginx chart from helm repository
-* source 2: a custom values file in this repo to override the nginx image version to older version
+* source 2: an empty custom values file to serve as the write-back-target for image updater
 
 After running image-updater, the image version in the live cluster should be updated to the new version.
 The changes are written to `empty-helmvalues/source2/values.yaml` file. See commit history of source2 repo for diffs

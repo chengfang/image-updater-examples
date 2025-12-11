@@ -4,7 +4,7 @@ metadata:
   name: empty-helmvalues
   namespace: argocd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: nginx=docker.io/bitnami/nginx:1.27.x
+    argocd-image-updater.argoproj.io/image-list: nginx=docker.io/bitnamilegacy/nginx:1.27.x
     argocd-image-updater.argoproj.io/update-strategy: semver
     argocd-image-updater.argoproj.io/force-update: "false"
     argocd-image-updater.argoproj.io/nginx.helm.image-name: image.repository
@@ -26,7 +26,7 @@ spec:
       chart: nginx
       helm:
         valueFiles:
-          - $values/empty-helmvalues/source2/values.yaml
+          - $values/empty-helmvalues/source2/values-0.yaml
     - repoURL: https://github.com/chengfang/image-updater-examples.git
       targetRevision: main
       ref: values
