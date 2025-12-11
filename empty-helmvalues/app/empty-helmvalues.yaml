@@ -27,6 +27,7 @@ spec:
       helm:
         valueFiles:
           - $values/empty-helmvalues/source2/values-0.yaml
+          - $values/empty-helmvalues/source2/values.yaml
     - repoURL: https://github.com/chengfang/image-updater-examples.git
       targetRevision: main
       ref: values
