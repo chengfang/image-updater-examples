@@ -61,6 +61,17 @@ docker.io/bitnami/nginx:1.27.1
 # to run image-updater from command line
 ../image-updater/dist/argocd-image-updater run --once --registries-conf-path=""
 
+# to verify the application state after image updater run:
+kubectl describe -n argocd apps/empty-helmvalues
+...
+  Source Types:
+    Helm
+
+  Summary:
+    Images:
+      docker.io/bitnamilegacy/nginx:1.27.5
+  Sync:
+...
 
 # to check the updated image tag
 kubectl get pod empty-helmvalues-nginx-xxx -n argocd -o jsonpath='{.spec.containers[0].image}'
