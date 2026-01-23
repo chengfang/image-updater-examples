@@ -4,7 +4,7 @@ This example contains a helm-based multi-source app:
 * source 3:
   - `values.yaml`: an empty custom values file to serve as the write-back-target for image updater.
       After image updater run, this file will be populated with changes. To reproduce this use case
-      in subsequent image updater runs, all content of this file should be removed.      
+      in subsequent image updater runs, all content of this file should be removed.
   - `values-0.yaml`: the values file used by this application manifest to use an old image version.
       Note that this file should not be modified by image updater runs.
 
@@ -21,40 +21,57 @@ image:
   tag: 1.27.5
   repository: docker.io/bitnamilegacy/nginx
 ```
-To configure the app to write updates to the correct repo, branch, values file path and values elements,
-the following application annotations are required:
+
+## ImageUpdater Custom Resource Configuration
+
+This sample uses the ImageUpdater Custom Resource (CR) introduced in v1.0.0, instead of the legacy
+annotation-based configuration. The ImageUpdater CR is defined in `app/image-updater.yaml`:
+
 ```yaml
-argocd-image-updater.argoproj.io/nginx.helm.image-name: image.repository
-argocd-image-updater.argoproj.io/nginx.helm.image-tag: image.tag
-argocd-image-updater.argoproj.io/git-repository: https://github.com/chengfang/image-updater-examples.git
-argocd-image-updater.argoproj.io/git-branch: main
-argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
-argocd-image-updater.argoproj.io/write-back-target: helmvalues:/kustomize-helmvalues/source2/values.yaml
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: kustomize-helmvalues
+  namespace: argocd
+spec:
+  namespace: argocd
+  applicationRefs:
+    - namePattern: "kustomize-helmvalues"
+      images:
+        - alias: "nginx"
+          imageName: "docker.io/bitnamilegacy/nginx:1.27.x"
+          commonUpdateSettings:
+            updateStrategy: "semver"
+            forceUpdate: false
+          manifestTargets:
+            helm:
+              name: "image.repository"
+              tag: "image.tag"
+  writeBackConfig:
+    method: "git:secret:argocd/git-creds"
+    gitConfig:
+      repository: "https://github.com/chengfang/image-updater-examples.git"
+      branch: "main"
+      writeBackTarget: "helmvalues:/kustomize-helmvalues/source2/values.yaml"
 ```
 
-To configure git write-back to use the default target file, `.argocd-source-<appName>.yaml`,
-remove the following line from application annotations:
-```yaml
-argocd-image-updater.argoproj.io/write-back-target: helmvalues
-```
-
-To configure the application to use the default write-back-method, `argocd`, remove these lines
-from application annotations. With `argocd` write-back-method, no updates will be committed to
-the git repository.
-```yaml
-argocd-image-updater.argoproj.io/git-repository: https://github.com/chengfang/image-updater-examples.git
-argocd-image-updater.argoproj.io/git-branch: main
-argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
-argocd-image-updater.argoproj.io/write-back-target: helmvalues:/kustomize-helmvalues/source2/values.yaml
-```
+Key fields:
+- `applicationRefs.namePattern`: selects the ArgoCD Application by name
+- `images.alias`: unique identifier for the image within this CR
+- `images.imageName`: the image to track with version constraint
+- `manifestTargets.helm.name`: helm values path for image repository
+- `manifestTargets.helm.tag`: helm values path for image tag
+- `writeBackConfig.method`: "git:secret:argocd/git-creds" specifies git write-back with credentials secret reference
+- `writeBackConfig.gitConfig.writeBackTarget`: target file path for writing updates
 
 ## test with write-helmvalues
 ```bash
 # to create the secret to access the git repo
 kubectl -n argocd create secret generic git-creds --from-literal=username=xxx --from-literal=password=xxx
 
-# to install the kustomize-helmvalues Argo CD application as a plain manifest
+# to install the kustomize-helmvalues Argo CD application and ImageUpdater CR
 kubectl apply -f kustomize-helmvalues/app/kustomize-helmvalues.yaml
+kubectl apply -f kustomize-helmvalues/app/image-updater.yaml
 
 # to verify the application state containing both kustomize and helm sources, and 2 images:
 kubectl describe -n argocd apps/kustomize-helmvalues
@@ -94,7 +111,7 @@ kubectl describe -n argocd apps/kustomize-helmvalues
 kubectl get pod kustomize-helmvalues-nginx-xxx -n argocd -o jsonpath='{.spec.containers[0].image}'
 docker.io/bitnami/nginx:1.27.5
 
-# to delete the write-helmvalues app
-kubectl delete -f kustomize-helmvalues/app/write-helmvalues.yaml 
-application.argoproj.io "kustomize-helmvalues" deleted
+# to delete the kustomize-helmvalues app and ImageUpdater CR
+kubectl delete -f kustomize-helmvalues/app/image-updater.yaml
+kubectl delete -f kustomize-helmvalues/app/kustomize-helmvalues.yaml
 ```

@@ -1,0 +1,25 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: kustomize-helmvalues
+  namespace: argocd
+spec:
+  namespace: argocd
+  applicationRefs:
+    - namePattern: "kustomize-helmvalues"
+      images:
+        - alias: "nginx"
+          imageName: "docker.io/bitnamilegacy/nginx:1.27.x"
+          commonUpdateSettings:
+            updateStrategy: "semver"
+            forceUpdate: false
+          manifestTargets:
+            helm:
+              name: "image.repository"
+              tag: "image.tag"
+  writeBackConfig:
+    method: "git:secret:argocd/git-creds"
+    gitConfig:
+      repository: "https://github.com/chengfang/image-updater-examples.git"
+      branch: "main"
+      writeBackTarget: "helmvalues:/kustomize-helmvalues/source2/values.yaml"
