@@ -1,0 +1,15 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: multi-source-helm
+  namespace: argocd
+spec:
+  namespace: argocd
+  applicationRefs:
+    - namePattern: "multi-source-helm"
+      images:
+        - alias: "nginx"
+          imageName: "docker.io/bitnami/nginx:1.27.x"
+          commonUpdateSettings:
+            updateStrategy: "semver"
+            forceUpdate: true
