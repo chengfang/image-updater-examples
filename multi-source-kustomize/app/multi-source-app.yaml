@@ -3,10 +3,6 @@ kind: Application
 metadata:
   name: multi-source-kustomize
   namespace: argocd
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: nginx=nginx:1.16.x
-    argocd-image-updater.argoproj.io/update-strategy: semver
-    argocd-image-updater.argoproj.io/force-update: "true"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:

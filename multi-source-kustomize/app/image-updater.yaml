@@ -1,0 +1,15 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: multi-source-kustomize
+  namespace: argocd
+spec:
+  namespace: argocd
+  commonUpdateSettings:
+    updateStrategy: "semver"
+    forceUpdate: true
+  applicationRefs:
+    - namePattern: "*-source-kustomize"
+      images:
+        - alias: "nginx"
+          imageName: "nginx:1.16.x"
