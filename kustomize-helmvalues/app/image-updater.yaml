@@ -2,9 +2,9 @@ apiVersion: argocd-image-updater.argoproj.io/v1alpha1
 kind: ImageUpdater
 metadata:
   name: kustomize-helmvalues
-  namespace: openshift-gitops
+  namespace: argocd-e2e
 spec:
-  namespace: openshift-gitops
+  namespace: argocd-e2e
   applicationRefs:
     - namePattern: "kustomize-helmvalues"
       images:
@@ -18,7 +18,7 @@ spec:
               name: "image.repository"
               tag: "image.tag"
   writeBackConfig:
-    method: "git:secret:openshift-gitops/git-creds"
+    method: "git:secret:argocd-e2e/git-creds"
     gitConfig:
       repository: "https://github.com/chengfang/image-updater-examples.git"
       branch: "main"
