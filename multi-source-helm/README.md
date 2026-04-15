@@ -16,7 +16,6 @@ metadata:
   name: multi-source-helm
   namespace: argocd
 spec:
-  namespace: argocd
   applicationRefs:
     - namePattern: "multi-source-helm"
       images:

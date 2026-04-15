@@ -16,7 +16,6 @@ metadata:
   name: multi-source-kustomize
   namespace: argocd
 spec:
-  namespace: argocd
   commonUpdateSettings:
     updateStrategy: "semver"
     forceUpdate: true

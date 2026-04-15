@@ -34,7 +34,6 @@ metadata:
   name: kustomize-helmvalues
   namespace: argocd
 spec:
-  namespace: argocd
   applicationRefs:
     - namePattern: "kustomize-helmvalues"
       images:
