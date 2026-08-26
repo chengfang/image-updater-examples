@@ -1,6 +1,0 @@
-plugin:
-  env:
-  - name: NGINX_IMAGE_NAME
-    value: nginx
-  - name: NGINX_IMAGE_TAG
-    value: 1.31.4
