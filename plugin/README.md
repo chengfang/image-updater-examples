@@ -177,9 +177,19 @@ spec:
           name: echo-plugin
 ```
 
-Or use this patch command:
+Or use these patch commands:
 
 ```bash
+# 1. Add the echo-plugin-config volume
+kubectl patch deployment argocd-repo-server -n argocd --type=json -p='[
+  {
+    "op": "add",
+    "path": "/spec/template/spec/volumes/-",
+    "value": {"name": "echo-plugin-config", "configMap": {"name": "echo-plugin"}}
+  }
+]'
+
+# 2. Add the echo-plugin sidecar container
 kubectl patch deployment argocd-repo-server -n argocd --type=json -p='[
   {
     "op": "add",
@@ -199,29 +209,14 @@ kubectl patch deployment argocd-repo-server -n argocd --type=json -p='[
         {"name": "echo-plugin-config", "mountPath": "/home/argocd/cmp-server/config/plugin.yaml", "subPath": "plugin.yaml"}
       ]
     }
-  },
-  {
-    "op": "add",
-    "path": "/spec/template/spec/volumes/-",
-    "value": {"name": "var-files", "emptyDir": {}}
-  },
-  {
-    "op": "add",
-    "path": "/spec/template/spec/volumes/-",
-    "value": {"name": "plugins", "emptyDir": {}}
-  },
-  {
-    "op": "add",
-    "path": "/spec/template/spec/volumes/-",
-    "value": {"name": "tmp", "emptyDir": {}}
-  },
-  {
-    "op": "add",
-    "path": "/spec/template/spec/volumes/-",
-    "value": {"name": "echo-plugin-config", "configMap": {"name": "echo-plugin"}}
   }
 ]'
+
+# 3. Wait for rollout
+kubectl rollout status deployment argocd-repo-server -n argocd
 ```
+
+**Note:** The common volumes (`var-files`, `plugins`, `tmp`) typically already exist in Argo CD installations. If you get duplicate volume errors, those volumes are already present and you can proceed with just steps 1 and 2 above.
 
 ### 3. Wait for repo-server to restart
 
