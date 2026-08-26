@@ -15,7 +15,6 @@ spec:
     targetRevision: main
     path: plugin/source
     plugin:
-      name: my-custom-plugin
       env:
         - name: NGINX_IMAGE_NAME
           value: nginx

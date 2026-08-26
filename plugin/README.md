@@ -357,7 +357,7 @@ The echo-plugin is a minimal Config Management Plugin that demonstrates plugin s
 
 - `manifestTargets.plugin` is mutually exclusive with `manifestTargets.helm` and `manifestTargets.kustomize`
 - When using `manifestTargets.plugin`, do not set `writeBackConfig.gitConfig.writeBackTarget` to `helmvalues` or `kustomization` - use the default write-back target instead
-- The plugin name in the Application spec (`my-custom-plugin`) must match the plugin name in the ConfigMap
+- **Plugin discovery**: This example uses auto-discovery - the Application spec omits the `plugin.name` field, so Argo CD runs each registered plugin's discover command until one succeeds. Alternatively, you can explicitly specify `name: my-custom-plugin` in `spec.source.plugin` to directly use that plugin
 - The `source/` directory only contains the `echo-plugin.marker` file for plugin discovery - all manifests are generated dynamically by the plugin
 
 ## Alternative Approach: Plugin Apps Consuming Helm/Kustomize Files
