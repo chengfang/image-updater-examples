@@ -23,31 +23,29 @@ data:
           - "-c"
           - |
             echo "Initializing echo plugin..."
-            echo "NGINX_IMAGE_NAME=${NGINX_IMAGE_NAME}"
-            echo "NGINX_IMAGE_TAG=${NGINX_IMAGE_TAG}"
+            echo "ARGOCD_ENV_NGINX_IMAGE_NAME=${ARGOCD_ENV_NGINX_IMAGE_NAME}"
+            echo "ARGOCD_ENV_NGINX_IMAGE_TAG=${ARGOCD_ENV_NGINX_IMAGE_TAG}"
       generate:
         command:
           - sh
           - "-c"
           - |
-            cat <<EOF
-            apiVersion: apps/v1
-            kind: Deployment
-            metadata:
-              name: plugin-app-nginx
-            spec:
-              replicas: 1
-              selector:
-                matchLabels:
-                  app: plugin-app
-              template:
-                metadata:
-                  labels:
-                    app: plugin-app
-                spec:
-                  containers:
-                  - name: nginx
-                    image: ${NGINX_IMAGE_NAME}:${NGINX_IMAGE_TAG}
-                    ports:
-                    - containerPort: 80
-            EOF
+            printf 'apiVersion: apps/v1\n'
+            printf 'kind: Deployment\n'
+            printf 'metadata:\n'
+            printf '  name: plugin-app-nginx\n'
+            printf 'spec:\n'
+            printf '  replicas: 1\n'
+            printf '  selector:\n'
+            printf '    matchLabels:\n'
+            printf '      app: plugin-app-nginx\n'
+            printf '  template:\n'
+            printf '    metadata:\n'
+            printf '      labels:\n'
+            printf '        app: plugin-app-nginx\n'
+            printf '    spec:\n'
+            printf '      containers:\n'
+            printf '      - name: nginx\n'
+            printf '        image: %s:%s\n' "${ARGOCD_ENV_NGINX_IMAGE_NAME}" "${ARGOCD_ENV_NGINX_IMAGE_TAG}"
+            printf '        ports:\n'
+            printf '        - containerPort: 80\n'
